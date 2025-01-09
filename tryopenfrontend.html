@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Proxy Example</title>
+  <style>
+    /* 设置页面样式 */
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center; /* 水平居中 */
+      align-items: center;    /* 垂直居中 */
+      height: 100vh;          /* 占满整个视口高度 */
+      background-color: #f4f4f4;
+      font-family: Arial, sans-serif;
+    }
+
+    /* 设置按钮样式 */
+    #send-request {
+      padding: 45px 60px;     /* 增加按钮的内边距 */
+      font-size: 4.5rem;      /* 增大字体 */
+      color: white;           /* 按钮文字颜色 */
+      background-color: #007BFF; /* 按钮背景色 */
+      border: none;           /* 移除边框 */
+      border-radius: 15px;     /* 按钮圆角 */
+      cursor: pointer;        /* 鼠标悬停时的样式 */
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* 添加阴影 */
+    }
+
+    /* 鼠标悬停时的按钮效果 */
+    #send-request:hover {
+      background-color: #0056b3;
+    }
+
+    /* 响应信息样式 */
+    #response {
+      position: absolute; /* 绝对定位 */
+      top: calc(50% + 120px); /* 按钮下方 120px */
+      text-align: center;
+      max-width: 80%;
+      word-wrap: break-word;
+      background-color: #fff; /* 白色背景 */
+      border: 1px solid #ddd; /* 边框 */
+      padding: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+    }
+
+    /* 返回信息显示时 */
+    #response.visible {
+      display: block; /* 显示响应信息 */
+    }
+  </style>
+</head>
+<body>
+  <button id="send-request">Open!</button>
+  <div id="response"></div>
+
+  <script>
+    document.getElementById('send-request').addEventListener('click', async () => {
+      const apiUrl = 'https://my-worker.yourdomain.workers.dev'; // Worker URL
+      const requestData = { message: 'Hello from frontend!' };
+
+      try {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestData),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        document.getElementById('response').textContent = JSON.stringify(responseData, null, 2);
+      } catch (error) {
+        document.getElementById('response').textContent = `Error: ${error.message}`;
+      }
+    });
+  </script>
+</body>
+</html>
